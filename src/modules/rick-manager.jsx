@@ -9,11 +9,11 @@ function getEpisodes(character) {
         .then(res => {
             if (res.status === 200)
                 return res.json();
-            return {};
+            throw new Error('Could not find episodes');
         })
         .catch((e) => {
-            console.log('Error while fetching inspirations:', e);
-            return {};
+            console.log('Error while fetching episodes:', e);
+            throw e;
         });
 }
 
@@ -26,18 +26,19 @@ function getAllCharacterNames(page) {
         .then(res => {
             if (res.status === 200)
                 return res.json();
-            return {};
+            throw new Error('Could not find names');
         })
         .then((data) => {
             console.log('Characters:', data);
             return {
                 numOfPages: data.info.pages,
-                names: data.results.reduce((names, value) => [...names, value.name], [])
+                names: data.results.reduce((names, value) =>
+                    [...names, value.name + ' (' + value.species + ')'], [])
             };
         })
         .catch((e) => {
-            console.log('Error while fetching inspirations:', e);
-            return {};
+            console.log('Error while fetching character names:', e);
+            throw e;
         });
 }
 

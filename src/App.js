@@ -10,6 +10,7 @@ function App() {
   const [searchText, setSearchText] = useState('');
   const [fetchingNewSearch, setFetchingNewSearch] = useState(false);
   const [charNames, setCharNames] = useState([]);
+  const [nameList, setNameList] = useState([]);
 
   // useEffect(() => {
   //   getAllCharacterNames(1)
@@ -29,16 +30,29 @@ function App() {
   // }, []);
 
   useEffect(() => {
-    setCharNames(characterNames);
+    setCharNames(characterNames.sort());
   }, []);
 
   useEffect(() => {
-    console.log('charNames', charNames);
+    // console.log('charNames', charNames);
   }, [charNames]);
 
   function onSearchTextChange(e) {
     setSearchText(e.target.value);
   }
+
+  useEffect(() => {
+    if (searchText.length > 0) {
+      console.log('Rendering names!');
+      setNameList(charNames.filter(name => {
+        return name.toLowerCase().indexOf(searchText.toLowerCase()) === 0;
+      }));
+      console.log('Ended names!');
+    }
+    else {
+      setNameList([]);
+    }
+  }, [searchText, charNames]);
 
   function onKeyUp(e) {
     if (e.keyCode === 13) {
@@ -62,7 +76,7 @@ function App() {
         setFetchingNewSearch(false);
       })
       .catch(err => {
-        console.log('Error while fetching gifs:', err);
+        console.log('Error while fetching episodes:', err);
         setFetchingNewSearch(false);
       });
   }
@@ -79,8 +93,9 @@ function App() {
     <div className="App">
       <h1 className="title">R&M episode finder! <span role="img" aria-label="UFO">🛸</span></h1>
       <div className="search-area">
-        <input name="search-text" className="search-box" type="text"
-          placeholder="Enter character name..."
+        <input name="search-text" className="search-box" list="names"
+          placeholder="Find a character..."
+          autoComplete="off"
           value={searchText}
           onChange={onSearchTextChange}
           onKeyUp={onKeyUp} />
@@ -89,10 +104,12 @@ function App() {
           disabled={fetchingNewSearch}>
           <span role="img" aria-label="magnify glass">SEARCH</span>
         </button>
+        <datalist id="names">
+          {nameList.map((name, i) =>
+            <option value={name} key={i} />
+          )}
+        </datalist>
       </div>
-      {/* {charNames.map((name, i) =>
-        <p key={i}>{name}</p>
-      )} */}
       {display}
     </div>
   );
