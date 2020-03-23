@@ -33,7 +33,7 @@ function getAllCharacterNames(page) {
             return {
                 numOfPages: data.info.pages,
                 names: data.results.reduce((names, value) =>
-                    [...names, value.name + ' (' + value.species + ')'], [])
+                    [...names, value.name], [])
             };
         })
         .catch((e) => {
@@ -42,7 +42,32 @@ function getAllCharacterNames(page) {
         });
 }
 
-export { getEpisodes, getAllCharacterNames };
+function getAllCharactersInPage(page) {
+    let fetchUrl = rickUrl + 'character/';
+    fetchUrl += '?page=' + page;
+    console.log('Fetching:', fetchUrl)
+
+    return fetch(fetchUrl)
+        .then(res => {
+            if (res.status === 200)
+                return res.json();
+            throw new Error('Could not find characters');
+        })
+        .then((data) => {
+            console.log('Fetched characters:', data);
+
+            return {
+                numOfPages: data.info.pages,
+                characters: data.results
+            };
+        })
+        .catch((e) => {
+            console.log('Error while fetching characters:', e);
+            throw e;
+        });
+}
+
+export { getEpisodes, getAllCharacterNames, getAllCharactersInPage };
 
 
 // Available character parameters:

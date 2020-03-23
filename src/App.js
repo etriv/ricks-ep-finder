@@ -1,58 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import './App.scss';
-import { getEpisodes, getAllCharacterNames } from './modules/rick-manager';
+import { getEpisodes, getAllCharactersInPage } from './modules/rick-manager';
 import MoonLoader from "react-spinners/MoonLoader";
-import { characterNames } from './modules/temp-data';
+import { charactersTempData } from './modules/temp-data';
 
 function App() {
   const [results, setResults] = useState([]);
   const [totalCount, setTotalCount] = useState(-1);
   const [searchText, setSearchText] = useState('');
   const [fetchingNewSearch, setFetchingNewSearch] = useState(false);
-  const [charNames, setCharNames] = useState([]);
+  const [characters, setCharacters] = useState([]);
   const [nameList, setNameList] = useState([]);
+  const devMode = true;
 
-  // useEffect(() => {
-  //   getAllCharacterNames(1)
-  //   .then((data) => {
-  //     setCharNames(data.names);
-  //     if (data.numOfPages < 2) return;
+  // Fetch and init all of the existing characters
+  useEffect(() => {
+    if (devMode) { setCharacters(charactersTempData); return; }
 
-  //     for(let pageNum = 2; pageNum <= data.numOfPages; pageNum++) {
-  //       getAllCharacterNames(pageNum)
-  //       .then((data) => {
-  //         setCharNames(prev => [...prev, ...data.names]);
-  //       })
-  //       .catch(e => console.log('Error while fetching names:', e))
-  //     }
-  //   })
-  //   .catch(e => console.log('Error while fetching names:', e));
-  // }, []);
+    getAllCharactersInPage(1)
+      .then((data) => {
+        setCharacters(data.characters);
+        if (data.numOfPages < 2) return;
+
+        for (let pageNum = 2; pageNum <= data.numOfPages; pageNum++) {
+          getAllCharactersInPage(pageNum)
+            .then((data) => {
+              setCharacters(prev => [...prev, ...data.characters]);
+            })
+            .catch(e => console.log('Error while fetching names:', e))
+        }
+      })
+      .catch(e => console.log('Error while fetching names:', e));
+  }, [devMode]);
 
   useEffect(() => {
-    setCharNames(characterNames.sort());
-  }, []);
-
-  useEffect(() => {
-    // console.log('charNames', charNames);
-  }, [charNames]);
+    console.log('characters', characters);
+  }, [characters]);
 
   function onSearchTextChange(e) {
     setSearchText(e.target.value);
   }
 
+  // Updating name options when serachText changes
   useEffect(() => {
     if (searchText.length > 0) {
-      console.log('Rendering names!');
-      setNameList(charNames.filter(name => {
-        return name.toLowerCase().indexOf(searchText.toLowerCase()) === 0;
-      }));
-      console.log('Ended names!');
+      setNameList(characters.reduce((names, char) => {
+        // console.log('char', char);
+        if (char.name.toLowerCase().indexOf(searchText.toLowerCase()) === 0
+          && !names.includes(char.name)) {
+          names.push(char.name);
+        }
+        return names;
+      }, []).sort());
     }
     else {
       setNameList([]);
     }
-  }, [searchText, charNames]);
+  }, [searchText, characters]);
 
   function onKeyUp(e) {
     if (e.keyCode === 13) {
@@ -61,13 +65,19 @@ function App() {
   }
 
   function onSearchClick() {
-    setFetchingNewSearch(true);
     let character = '';
-    if (searchText === '') // TODO: Remove adter dev is complete
-      character = 'rick';
-    else
+    if (searchText === '') // TODO: Remove after dev is complete
+      character = 'Rick Sanchez';
+    else if (nameList.filter(name =>
+      name.toLowerCase() === searchText.toLowerCase()).length > 0) {
       character = searchText;
-
+    }
+    else {
+      alert('Please choose an existing character from the list');
+      return;
+    }
+    
+    setFetchingNewSearch(true);
     getEpisodes(character)
       .then(data => {
         console.log('Fetched:', data);
@@ -106,7 +116,7 @@ function App() {
         </button>
         <datalist id="names">
           {nameList.map((name, i) =>
-            <option value={name} key={i} />
+            <option value={name} key={name + i} />
           )}
         </datalist>
       </div>
