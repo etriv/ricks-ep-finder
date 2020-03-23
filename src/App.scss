@@ -3,6 +3,38 @@
 .App {
   text-align: center;
 
+  .results-container {
+
+    .char-img {
+      margin: 0rem auto 0.5rem auto;
+      height: 300px;
+      border-radius: 6px;
+    }
+
+    .episodes-title {
+      margin: 0.1rem auto 0rem auto;
+      font-size: 1.2rem;
+      text-decoration: underline;
+    }
+
+    .episodes-container {
+      // border: 1px dotted red;
+      width: 25rem;
+      margin: 0.5rem auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      align-items: flex-start;
+      flex-wrap: nowrap;
+      // overflow: hidden;
+      // align-content: center;
+  
+      .episode-details {
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
+  }
   .title {
     color: $color3;
     font-family: 'Lora', sans;

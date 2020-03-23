@@ -1,8 +1,8 @@
 const rickUrl = 'https://rickandmortyapi.com/api/';
 
-function getEpisodes(character) {
-    let fetchUrl = rickUrl + 'character/';
-    fetchUrl += '?name=' + character;
+function getEpisodes(episodeIds) {
+    let fetchUrl = rickUrl + 'episode/';
+    fetchUrl += episodeIds;
 
     console.log('Fetching:', fetchUrl)
     return fetch(fetchUrl)
@@ -10,6 +10,12 @@ function getEpisodes(character) {
             if (res.status === 200)
                 return res.json();
             throw new Error('Could not find episodes');
+        })
+        .then(data => {
+            if (episodeIds.length === 1) {
+                return [data];
+            }
+            return data;
         })
         .catch((e) => {
             console.log('Error while fetching episodes:', e);

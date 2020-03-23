@@ -5,12 +5,13 @@ import MoonLoader from "react-spinners/MoonLoader";
 import { charactersTempData } from './modules/temp-data';
 
 function App() {
-  const [results, setResults] = useState([]);
-  const [totalCount, setTotalCount] = useState(-1);
+  const [episodes, setEpisodes] = useState([]);
+  const [currentChars, setCurrentChars] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [fetchingNewSearch, setFetchingNewSearch] = useState(false);
   const [characters, setCharacters] = useState([]);
   const [nameList, setNameList] = useState([]);
+  const [display, setDisplay] = useState(null);
   const devMode = true;
 
   // Fetch and init all of the existing characters
@@ -64,25 +65,48 @@ function App() {
     }
   }
 
+  function getEpisodeIdsByChars(charsInfo) {
+    const episodeIds = charsInfo.reduce((epIds, char) => {
+      for (let epUrl of char.episode) {
+        const epId = epUrl.slice(epUrl.indexOf('episode/') + 8);
+        if (!epIds.includes(epId))
+          epIds.push(epId);
+      }
+      return epIds;
+    }, []);
+
+    return episodeIds.sort();
+  }
+
   function onSearchClick() {
-    let character = '';
+    let characterName = '';
     if (searchText === '') // TODO: Remove after dev is complete
-      character = 'Rick Sanchez';
+      characterName = 'Rick Sanchez';
     else if (nameList.filter(name =>
       name.toLowerCase() === searchText.toLowerCase()).length > 0) {
-      character = searchText;
+      characterName = searchText;
     }
     else {
-      alert('Please choose an existing character from the list');
+      alert('Please choose an existing character from the list.');
       return;
     }
-    
+
     setFetchingNewSearch(true);
-    getEpisodes(character)
+
+    // Find all characters that share the exact same name
+    const charsInfo = characters.filter(char => char.name === characterName);
+    setCurrentChars(charsInfo);
+    console.log('CharsInfo:', charsInfo);
+
+    // Find all the episode ids that the characters appear in
+    const episodeIds = getEpisodeIdsByChars(charsInfo);
+    console.log('episodeIds list:', episodeIds);
+
+    // Fetch the info about the found episodes
+    getEpisodes(episodeIds)
       .then(data => {
-        console.log('Fetched:', data);
-        setTotalCount(data.info.count);
-        setResults(data.results);
+        console.log('Fetched episodes:', data);
+        setEpisodes(data);
         setFetchingNewSearch(false);
       })
       .catch(err => {
@@ -91,13 +115,32 @@ function App() {
       });
   }
 
-  let display = null;
-  if (fetchingNewSearch) {
-    display = <MoonLoader
-      css={"margin: 4rem auto"}
-      size={100}
-      color={"#b83b5e"} />;
-  }
+  // Setting up display
+  useEffect(() => {
+    if (fetchingNewSearch) {
+      setDisplay(
+        <MoonLoader
+          css={"margin: 4rem auto"}
+          size={100}
+          color={"#b83b5e"} />
+      );
+    }
+    else if (episodes.length > 0 && currentChars.length > 0) {
+      setDisplay(
+        <div className="results-container">
+          <img className="char-img" src={currentChars[0].image} alt="Character" />
+          <p className="episodes-title"><i>{currentChars[0].name}</i> appears in:</p>
+          <div className="episodes-container">
+            {episodes.map((ep, i) =>
+              <div className="episode-details" key={i}>
+                {ep.episode + ': '}<b>{ep.name}</b>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+  }, [fetchingNewSearch, episodes, currentChars]);
 
   return (
     <div className="App">
