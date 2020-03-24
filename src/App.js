@@ -12,6 +12,7 @@ function App() {
   const [characters, setCharacters] = useState([]);
   const [nameList, setNameList] = useState([]);
   const [display, setDisplay] = useState(null);
+  const [errorMsg, setErrorMsg] = useState('');
   const devMode = true;
 
   // Fetch and init all of the existing characters
@@ -80,17 +81,19 @@ function App() {
 
   function onSearchClick() {
     let characterName = '';
-    if (searchText === '') // TODO: Remove after dev is complete
+
+    if (devMode && searchText === '')
       characterName = 'Rick Sanchez';
     else if (nameList.filter(name =>
       name.toLowerCase() === searchText.toLowerCase()).length > 0) {
       characterName = searchText;
     }
     else {
-      alert('Please choose an existing character from the list.');
+      setErrorMsg('⚠️ Please choose an existing character ⚠️');
       return;
     }
 
+    setErrorMsg('');
     setFetchingNewSearch(true);
 
     // Find all characters that share the exact same name
@@ -127,6 +130,11 @@ function App() {
           color={"#b83b5e"} />
       );
     }
+    else if (errorMsg !== '') {
+      setDisplay(
+        <div className="error-msg">{errorMsg}</div>
+      );
+    }
     else if (episodes.length > 0 && currentChars.length > 0) {
       setDisplay(
         <div className="results-container">
@@ -159,7 +167,7 @@ function App() {
     function getCharactersBySpecies(species) {
       return characters.filter((char) => char.species === species);
     }
-  }, [fetchingNewSearch, episodes, currentChars, characters]);
+  }, [fetchingNewSearch, episodes, currentChars, characters, errorMsg]);
 
   return (
     <div className="App">

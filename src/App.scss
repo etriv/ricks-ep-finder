@@ -104,6 +104,16 @@
       }
     }
   }
+
+  .error-msg {
+    display:inline-block;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: $color4;
+    margin: 1rem auto;
+    border: 2px solid $color4;
+    padding: 8px;
+  }
 }
 
 .App-header {
