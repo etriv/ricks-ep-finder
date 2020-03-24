@@ -115,6 +115,8 @@ function App() {
       });
   }
 
+
+
   // Setting up result's display
   useEffect(() => {
     if (fetchingNewSearch) {
@@ -129,7 +131,7 @@ function App() {
       setDisplay(
         <div className="results-container">
           <img className="char-img" src={currentChars[0].image} alt="Character" />
-          <p className="episodes-title"><i>{currentChars[0].name}</i> appears in:</p>
+          <p className="results-title"><i>{currentChars[0].name}</i> appears in:</p>
           <div className="episodes-container">
             {episodes.map((ep, i) =>
               <div className="episode-details" key={i}>
@@ -137,10 +139,27 @@ function App() {
               </div>
             )}
           </div>
+          <p className="results-title">Characters of the <i>{currentChars[0].species}</i> species:</p>
+          <div className="recommended-container">
+            {getCharactersParagraph(getCharactersBySpecies(currentChars[0].species))}
+          </div>
         </div>
       );
     }
-  }, [fetchingNewSearch, episodes, currentChars]);
+
+    function getCharactersParagraph(chars) {
+      return chars.map((char, i) => {
+        if (i < chars.length - 1)
+          return char.name + ', ';
+        else
+          return char.name;
+      });
+    }
+
+    function getCharactersBySpecies(species) {
+      return characters.filter((char) => char.species === species);
+    }
+  }, [fetchingNewSearch, episodes, currentChars, characters]);
 
   return (
     <div className="App">

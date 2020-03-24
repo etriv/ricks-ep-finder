@@ -11,7 +11,7 @@
       border-radius: 6px;
     }
 
-    .episodes-title {
+    .results-title {
       margin: 0.1rem auto 0rem auto;
       font-size: 1.2rem;
       text-decoration: underline;
@@ -20,7 +20,7 @@
     .episodes-container {
       // border: 1px dotted red;
       width: 25rem;
-      margin: 0.5rem auto;
+      margin: 0.5rem auto 1rem auto;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -33,6 +33,12 @@
         overflow: hidden;
         white-space: nowrap;
       }
+    }
+
+    .recommended-container {
+      width: 26rem;
+      margin: 0.5rem auto;
+      font-size: 0.8rem;
     }
   }
   .title {
