@@ -1,0 +1,43 @@
+@import '../../modules/global-styles.scss';
+
+.results-container {
+    width: 25rem;
+    margin: auto;
+
+    .char-img {
+      margin: 0rem auto 0.5rem auto;
+      height: 300px;
+      border-radius: 6px;
+    }
+
+    .results-title {
+      margin: 0.1rem auto 0rem auto;
+      font-size: 1.2rem;
+      text-decoration: underline;
+    }
+
+    .episodes-container {
+      // border: 1px dotted red;
+      width: 100%;
+      margin: 0.5rem auto 1rem auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-items: flex-start;
+      flex-wrap: nowrap;
+      // overflow: hidden;
+      // align-content: center;
+  
+      .episode-details {
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
+
+    .recommended-container {
+      width: 100%;
+      margin: 0.5rem auto;
+      font-size: 0.8rem;
+      text-align: left;
+    }
+  }

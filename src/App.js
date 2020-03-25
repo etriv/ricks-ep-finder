@@ -4,6 +4,7 @@ import { getEpisodes, getAllCharactersInPage } from './modules/rick-manager';
 import MoonLoader from "react-spinners/MoonLoader";
 import { charactersTempData } from './modules/temp-data';
 import SearchArea from './components/search-area/search-area';
+import Results from './components/results/results';
 
 function App() {
   const [episodes, setEpisodes] = useState([]);
@@ -62,7 +63,7 @@ function App() {
     setCurrentChars(charsInfo);
     // console.log('CharsInfo:', charsInfo);
 
-    // Find all the episode ids that the characters appear in
+    // Find all the episode ids that the characters appears in
     const episodeIds = getEpisodeIdsByChars(charsInfo);
     // console.log('episodeIds list:', episodeIds);
 
@@ -79,7 +80,7 @@ function App() {
       });
   }
 
-  // Setting up result's display
+  // Setting up the display
   useEffect(() => {
     updateDisplay();
 
@@ -94,36 +95,18 @@ function App() {
       }
       else if (episodes.length > 0 && currentChars.length > 0) {
         setDisplay(
-          <div className="results-container">
-            <img className="char-img" src={currentChars[0].image} alt="Character" />
-            <p className="results-title"><i>{currentChars[0].name}</i> appears in:</p>
-            <div className="episodes-container">
-              {episodes.map((ep, i) =>
-                <div className="episode-details" key={i}>
-                  {ep.episode + ': '}<b>{ep.name}</b>
-                </div>
-              )}
-            </div>
-            <p className="results-title">Characters of the <i>{currentChars[0].species}</i> species:</p>
-            <div className="recommended-container">
-              {getCharactersParagraph(getCharactersBySpecies(currentChars[0].species))}
-            </div>
-          </div>
+          <Results
+            imgUrl={currentChars[0].image}
+            charName={currentChars[0].name}
+            episodes={episodes}
+            species={currentChars[0].species}
+            speciesChars={characters.filter((char) =>
+              char.species === currentChars[0].species)} />
         );
       }
-    }
-
-    function getCharactersParagraph(chars) {
-      return chars.map((char, i) => {
-        if (i < chars.length - 1)
-          return char.name + ', ';
-        else
-          return char.name;
-      });
-    }
-
-    function getCharactersBySpecies(species) {
-      return characters.filter((char) => char.species === species);
+      else {
+        setDisplay(null);
+      }
     }
   }, [fetchingNewSearch, episodes, currentChars, characters]);
 
