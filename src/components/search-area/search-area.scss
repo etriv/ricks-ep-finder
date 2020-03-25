@@ -1,0 +1,75 @@
+@import '../../modules/global-styles.scss';
+
+.title {
+    color: $color3;
+    font-family: 'Lora', sans;
+    font-weight: 900;
+    font-size: 5rem;
+    margin: 1rem auto;
+    text-align: center;
+    // letter-spacing: 4px;
+    word-spacing: 4px;
+    text-shadow: 2px 2px 1px $color4;
+  }
+
+  .no-results {
+    margin: 1.5rem auto;
+    font-weight: bold;
+  }
+
+  .search-area {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    margin: 1.2rem auto;
+
+    .search-box {
+      border: 1px solid black;
+      padding: 0.5rem 1rem;
+      border-radius: 20px 0px 0px 20px;
+      width: 18rem;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 1rem;
+      // margin: 1rem auto;
+      // box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+
+      &:focus {
+          outline: 0;
+          content: "";
+      }
+    }
+
+    .search-button {
+      color: white;
+      font-weight: 600;
+      background-color: $color1;
+      font-size: 0.9rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0px 20px 20px 0px;
+      transition: background-color 0.3s;
+      outline: none;
+      border: none;
+      letter-spacing: 2px;
+
+      &:hover {
+        background-color: lighten($color1, 5%);
+        cursor: pointer;
+      }
+      &:active {
+          background-color: lighten($color1, 10%);
+          transition: background-color 0s;
+      }
+    }
+  }
+
+  .error-msg {
+    display:inline-block;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: $color4;
+    margin: 1rem auto;
+    border: 2px solid $color4;
+    padding: 8px;
+  }

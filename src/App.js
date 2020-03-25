@@ -3,16 +3,14 @@ import './App.scss';
 import { getEpisodes, getAllCharactersInPage } from './modules/rick-manager';
 import MoonLoader from "react-spinners/MoonLoader";
 import { charactersTempData } from './modules/temp-data';
+import SearchArea from './components/search-area/search-area';
 
 function App() {
   const [episodes, setEpisodes] = useState([]);
   const [currentChars, setCurrentChars] = useState([]);
-  const [searchText, setSearchText] = useState('');
   const [fetchingNewSearch, setFetchingNewSearch] = useState(false);
   const [characters, setCharacters] = useState([]);
-  const [nameList, setNameList] = useState([]);
   const [display, setDisplay] = useState(null);
-  const [errorMsg, setErrorMsg] = useState('');
   const devMode = true;
 
   // Fetch and init all of the existing characters
@@ -43,37 +41,6 @@ function App() {
     console.log('characters', characters);
   }, [characters]);
 
-  function onSearchTextChange(e) {
-    setSearchText(e.target.value);
-  }
-
-  // Updating name options when serachText changes
-  useEffect(() => {
-    nameOptionsList();
-
-    function nameOptionsList() {
-      if (searchText.length > 0) {
-        setNameList(characters.reduce((names, char) => {
-          // console.log('char', char);
-          if (char.name.toLowerCase().indexOf(searchText.toLowerCase()) === 0
-            && !names.includes(char.name)) {
-            names.push(char.name);
-          }
-          return names;
-        }, []).sort());
-      }
-      else {
-        setNameList([]);
-      }
-    }
-  }, [searchText, characters]);
-
-  function onKeyUp(e) {
-    if (e.keyCode === 13) {
-      onSearchClick();
-    }
-  }
-
   function getEpisodeIdsByChars(charsInfo) {
     const episodeIds = charsInfo.reduce((epIds, char) => {
       for (let epUrl of char.episode) {
@@ -87,21 +54,7 @@ function App() {
     return episodeIds.sort();
   }
 
-  function onSearchClick() {
-    let characterName = '';
-
-    if (devMode && searchText === '')
-      characterName = 'Rick Sanchez'; // Default search value
-    else if (nameList.filter(name =>
-      name.toLowerCase() === searchText.toLowerCase()).length > 0) {
-      characterName = searchText;
-    }
-    else {
-      setErrorMsg('⚠️ Please choose an existing character ⚠️');
-      return;
-    }
-
-    setErrorMsg('');
+  function onSearch(characterName) {
     setFetchingNewSearch(true);
 
     // Find all characters that share the exact same name
@@ -139,11 +92,6 @@ function App() {
             color={"#b83b5e"} />
         );
       }
-      else if (errorMsg !== '') {
-        setDisplay(
-          <div className="error-msg">{errorMsg}</div>
-        );
-      }
       else if (episodes.length > 0 && currentChars.length > 0) {
         setDisplay(
           <div className="results-container">
@@ -177,29 +125,15 @@ function App() {
     function getCharactersBySpecies(species) {
       return characters.filter((char) => char.species === species);
     }
-  }, [fetchingNewSearch, episodes, currentChars, characters, errorMsg]);
+  }, [fetchingNewSearch, episodes, currentChars, characters]);
 
   return (
     <div className="App">
       <h1 className="title">R&M episode finder! <span role="img" aria-label="UFO">🛸</span></h1>
-      <div className="search-area">
-        <input name="search-text" className="search-box" list="names"
-          placeholder="Find a character..."
-          autoComplete="off"
-          value={searchText}
-          onChange={onSearchTextChange}
-          onKeyUp={onKeyUp} />
-        <button className="search-button"
-          onClick={onSearchClick}
-          disabled={fetchingNewSearch}>
-          <span role="img" aria-label="magnify glass">SEARCH</span>
-        </button>
-        <datalist id="names">
-          {nameList.map((name, i) =>
-            <option value={name} key={name + i} />
-          )}
-        </datalist>
-      </div>
+      <SearchArea
+        characters={characters}
+        searchDisabled={fetchingNewSearch}
+        onSearch={onSearch} />
       {display}
     </div>
   );
