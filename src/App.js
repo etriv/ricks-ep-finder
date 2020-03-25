@@ -17,22 +17,26 @@ function App() {
 
   // Fetch and init all of the existing characters
   useEffect(() => {
-    if (devMode) { setCharacters(charactersTempData); return; }
+    initCharacters();
 
-    getAllCharactersInPage(1)
-      .then((data) => {
-        setCharacters(data.characters);
-        if (data.numOfPages < 2) return;
+    function initCharacters() {
+      if (devMode) { setCharacters(charactersTempData); return; }
 
-        for (let pageNum = 2; pageNum <= data.numOfPages; pageNum++) {
-          getAllCharactersInPage(pageNum)
-            .then((data) => {
-              setCharacters(prev => [...prev, ...data.characters]);
-            })
-            .catch(e => console.log('Error while fetching names:', e))
-        }
-      })
-      .catch(e => console.log('Error while fetching names:', e));
+      getAllCharactersInPage(1)
+        .then((data) => {
+          setCharacters(data.characters);
+          if (data.numOfPages < 2) return;
+
+          for (let pageNum = 2; pageNum <= data.numOfPages; pageNum++) {
+            getAllCharactersInPage(pageNum)
+              .then((data) => {
+                setCharacters(prev => [...prev, ...data.characters]);
+              })
+              .catch(e => console.log('Error while fetching names:', e))
+          }
+        })
+        .catch(e => console.log('Error while fetching names:', e));
+    }
   }, [devMode]);
 
   useEffect(() => {
@@ -45,18 +49,22 @@ function App() {
 
   // Updating name options when serachText changes
   useEffect(() => {
-    if (searchText.length > 0) {
-      setNameList(characters.reduce((names, char) => {
-        // console.log('char', char);
-        if (char.name.toLowerCase().indexOf(searchText.toLowerCase()) === 0
-          && !names.includes(char.name)) {
-          names.push(char.name);
-        }
-        return names;
-      }, []).sort());
-    }
-    else {
-      setNameList([]);
+    nameOptionsList();
+
+    function nameOptionsList() {
+      if (searchText.length > 0) {
+        setNameList(characters.reduce((names, char) => {
+          // console.log('char', char);
+          if (char.name.toLowerCase().indexOf(searchText.toLowerCase()) === 0
+            && !names.includes(char.name)) {
+            names.push(char.name);
+          }
+          return names;
+        }, []).sort());
+      }
+      else {
+        setNameList([]);
+      }
     }
   }, [searchText, characters]);
 
@@ -83,7 +91,7 @@ function App() {
     let characterName = '';
 
     if (devMode && searchText === '')
-      characterName = 'Rick Sanchez';
+      characterName = 'Rick Sanchez'; // Default search value
     else if (nameList.filter(name =>
       name.toLowerCase() === searchText.toLowerCase()).length > 0) {
       characterName = searchText;
@@ -99,11 +107,11 @@ function App() {
     // Find all characters that share the exact same name
     const charsInfo = characters.filter(char => char.name === characterName);
     setCurrentChars(charsInfo);
-    console.log('CharsInfo:', charsInfo);
+    // console.log('CharsInfo:', charsInfo);
 
     // Find all the episode ids that the characters appear in
     const episodeIds = getEpisodeIdsByChars(charsInfo);
-    console.log('episodeIds list:', episodeIds);
+    // console.log('episodeIds list:', episodeIds);
 
     // Fetch the info about the found episodes
     getEpisodes(episodeIds)
@@ -118,41 +126,43 @@ function App() {
       });
   }
 
-
-
   // Setting up result's display
   useEffect(() => {
-    if (fetchingNewSearch) {
-      setDisplay(
-        <MoonLoader
-          css={"margin: 4rem auto"}
-          size={100}
-          color={"#b83b5e"} />
-      );
-    }
-    else if (errorMsg !== '') {
-      setDisplay(
-        <div className="error-msg">{errorMsg}</div>
-      );
-    }
-    else if (episodes.length > 0 && currentChars.length > 0) {
-      setDisplay(
-        <div className="results-container">
-          <img className="char-img" src={currentChars[0].image} alt="Character" />
-          <p className="results-title"><i>{currentChars[0].name}</i> appears in:</p>
-          <div className="episodes-container">
-            {episodes.map((ep, i) =>
-              <div className="episode-details" key={i}>
-                {ep.episode + ': '}<b>{ep.name}</b>
-              </div>
-            )}
+    updateDisplay();
+
+    function updateDisplay() {
+      if (fetchingNewSearch) {
+        setDisplay(
+          <MoonLoader
+            css={"margin: 4rem auto"}
+            size={100}
+            color={"#b83b5e"} />
+        );
+      }
+      else if (errorMsg !== '') {
+        setDisplay(
+          <div className="error-msg">{errorMsg}</div>
+        );
+      }
+      else if (episodes.length > 0 && currentChars.length > 0) {
+        setDisplay(
+          <div className="results-container">
+            <img className="char-img" src={currentChars[0].image} alt="Character" />
+            <p className="results-title"><i>{currentChars[0].name}</i> appears in:</p>
+            <div className="episodes-container">
+              {episodes.map((ep, i) =>
+                <div className="episode-details" key={i}>
+                  {ep.episode + ': '}<b>{ep.name}</b>
+                </div>
+              )}
+            </div>
+            <p className="results-title">Characters of the <i>{currentChars[0].species}</i> species:</p>
+            <div className="recommended-container">
+              {getCharactersParagraph(getCharactersBySpecies(currentChars[0].species))}
+            </div>
           </div>
-          <p className="results-title">Characters of the <i>{currentChars[0].species}</i> species:</p>
-          <div className="recommended-container">
-            {getCharactersParagraph(getCharactersBySpecies(currentChars[0].species))}
-          </div>
-        </div>
-      );
+        );
+      }
     }
 
     function getCharactersParagraph(chars) {
