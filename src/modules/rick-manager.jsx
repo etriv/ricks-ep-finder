@@ -1,4 +1,4 @@
-const rickUrl = 'https://rickandmortyapi.com/api/';
+const rickUrl = process.env.REACT_APP_RM_API_URL;
 
 function getEpisodes(episodeIds) {
     let fetchUrl = rickUrl + 'episode/';

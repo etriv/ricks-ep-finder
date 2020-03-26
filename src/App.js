@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.scss';
 import { getEpisodes, getAllCharactersInPage } from './modules/rick-manager';
 import MoonLoader from "react-spinners/MoonLoader";
-import { charactersTempData } from './modules/temp-data';
+import { mockCharacters } from './modules/mock-data';
 import SearchArea from './components/search-area/search-area';
 import Results from './components/results/results';
 
@@ -19,12 +19,12 @@ function App() {
     initCharacters();
 
     function initCharacters() {
-      if (devMode) { setCharacters(charactersTempData); return; }
+      if (process.env.REACT_APP_DEV_MODE === '1') { setCharacters(mockCharacters); return null; }
 
       getAllCharactersInPage(1)
         .then((data) => {
           setCharacters(data.characters);
-          if (data.numOfPages < 2) return;
+          if (data.numOfPages < 2) return null;
 
           for (let pageNum = 2; pageNum <= data.numOfPages; pageNum++) {
             getAllCharactersInPage(pageNum)
@@ -110,7 +110,7 @@ function App() {
     }
   }, [fetchingNewSearch, episodes, currentChars, characters]);
 
-  return (
+  return(
     <div className="App">
       <h1 className="title">R&M episode finder! <span role="img" aria-label="UFO">🛸</span></h1>
       <SearchArea

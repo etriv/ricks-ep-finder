@@ -1,4 +1,4 @@
-const charactersTempData = [
+const mockCharacters = [
   {
     "id": 1,
     "name": "Rick Sanchez",
@@ -11156,4 +11156,4 @@ const charactersTempData = [
   }
 ];
 
-  export { charactersTempData };
+  export { mockCharacters };

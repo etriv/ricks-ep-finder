@@ -1,8 +1,7 @@
 import React from 'react';
 import SearchArea from '../search-area';
 import { render, fireEvent, cleanup } from '@testing-library/react';
-import { charactersTempData } from '../../../modules/temp-data';
-// import { getByPlaceholderText } from '@testing-library/dom'
+import { mockCharacters } from '../../../modules/mock-data';
 
 afterEach(cleanup)
 
@@ -10,7 +9,7 @@ it('Typing in search box populates options list', () => {
     const { getByText, getByPlaceholderText} = render(<SearchArea
         onSearch={() => null}
         searchDisabled={false}
-        characters={charactersTempData} />);
+        characters={mockCharacters} />);
 
     // debug();
 
