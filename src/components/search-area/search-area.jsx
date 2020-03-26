@@ -55,7 +55,7 @@ function SerachArea({ onSearch, searchDisabled, characters }) {
     }, [searchText, characters]);
 
     return (
-        <div classNAme="search-container">
+        <div className="search-container">
             <div className="search-area">
                 <input name="search-text" className="search-box" list="names"
                     placeholder="Find a character..."
