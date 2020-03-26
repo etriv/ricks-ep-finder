@@ -4,7 +4,7 @@ function getEpisodes(episodeIds) {
     let fetchUrl = rickUrl + 'episode/';
     fetchUrl += episodeIds;
 
-    // console.log('Fetching:', fetchUrl)
+    console.log('Fetching:', fetchUrl)
     return fetch(fetchUrl)
         .then(res => {
             if (res.status === 200)

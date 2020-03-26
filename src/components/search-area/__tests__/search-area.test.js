@@ -6,19 +6,19 @@ import { mockCharacters } from '../../../modules/mock-data';
 afterEach(cleanup)
 
 it('Typing in search box populates options list', () => {
-    const { getByText, getByPlaceholderText} = render(<SearchArea
+    const { getByText, getByPlaceholderText, debug } = render(<SearchArea
         onSearch={() => null}
         searchDisabled={false}
         characters={mockCharacters} />);
 
     // debug();
 
-    fireEvent.change(getByPlaceholderText(/Find a character/i), { target: { value: 'rick' } })
+    fireEvent.change(getByPlaceholderText(/Find a character/i), { target: { value: 'rick' } });
 
     expect(getByText('Rick Sanchez')).toBeInTheDocument();
     expect(getByText('Rick Prime')).toBeInTheDocument();
 
-    fireEvent.change(getByPlaceholderText(/Find a character/i), { target: { value: 'mo' } })
+    fireEvent.change(getByPlaceholderText(/Find a character/i), { target: { value: 'mo' } });
 
     expect(getByText('Morty Smith')).toBeInTheDocument();
     expect(getByText('Modern Rick')).toBeInTheDocument();

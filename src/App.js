@@ -21,6 +21,7 @@ function App() {
     function initCharacters() {
       if (process.env.REACT_APP_DEV_MODE === '1') { setCharacters(mockCharacters); return null; }
 
+      //console.log('Fetching from API...');
       getAllCharactersInPage(1)
         .then((data) => {
           setCharacters(data.characters);
@@ -39,7 +40,7 @@ function App() {
   }, [devMode]);
 
   useEffect(() => {
-    // console.log('characters', characters);
+    // console.log('All characters:', characters[0]);
   }, [characters]);
 
   function getEpisodeIdsByChars(charsInfo) {
