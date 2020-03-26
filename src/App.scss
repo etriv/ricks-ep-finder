@@ -3,6 +3,22 @@
 .App {
   text-align: center;
   
+  .title {
+    color: $color3;
+    font-family: 'Lora', sans;
+    font-weight: 900;
+    font-size: 5rem;
+    margin: 1rem auto;
+    text-align: center;
+    // letter-spacing: 4px;
+    word-spacing: 4px;
+    text-shadow: 2px 2px 1px $color4;
+  }
+
+  .no-results {
+    margin: 1.5rem auto;
+    font-weight: bold;
+  }
 }
 
 .App-header {

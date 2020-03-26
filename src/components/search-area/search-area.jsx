@@ -55,23 +55,26 @@ function SerachArea({ onSearch, searchDisabled, characters }) {
     }, [searchText, characters]);
 
     return (
-        <div className="search-area">
-            <input name="search-text" className="search-box" list="names"
-                placeholder="Find a character..."
-                autoComplete="off"
-                value={searchText}
-                onChange={onSearchTextChange}
-                onKeyUp={onKeyUp} />
-            <button className="search-button"
-                onClick={onSearchButtonClick}
-                disabled={searchDisabled}>
-                SEARCH
+        <div classNAme="search-container">
+            <div className="search-area">
+                <input name="search-text" className="search-box" list="names"
+                    placeholder="Find a character..."
+                    autoComplete="off"
+                    value={searchText}
+                    onChange={onSearchTextChange}
+                    onKeyUp={onKeyUp} />
+                <button className="search-button"
+                    onClick={onSearchButtonClick}
+                    disabled={searchDisabled}>
+                    SEARCH
             </button>
-            <datalist id="names">
-                {nameList.map((name, i) =>
-                    <option value={name} key={name + i}>{name}</option>
-                )}
-            </datalist>
+                <datalist id="names">
+                    {nameList.map((name, i) =>
+                        <option value={name} key={name + i}>{name}</option>
+                    )}
+                </datalist>
+
+            </div>
             {errorMsg !== '' ?
                 <div className="error-msg">{errorMsg}</div>
                 : null
