@@ -69,7 +69,7 @@ function SerachArea({ onSearch, searchDisabled, characters }) {
             </button>
             <datalist id="names">
                 {nameList.map((name, i) =>
-                    <option value={name} key={name + i} />
+                    <option value={name} key={name + i}>{name}</option>
                 )}
             </datalist>
             {errorMsg !== '' ?

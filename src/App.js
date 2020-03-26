@@ -39,7 +39,7 @@ function App() {
   }, [devMode]);
 
   useEffect(() => {
-    console.log('characters', characters);
+    // console.log('characters', characters);
   }, [characters]);
 
   function getEpisodeIdsByChars(charsInfo) {
@@ -70,12 +70,12 @@ function App() {
     // Fetch the info about the found episodes
     getEpisodes(episodeIds)
       .then(data => {
-        console.log('Fetched episodes:', data);
+        // console.log('Fetched episodes:', data);
         setEpisodes(data);
         setFetchingNewSearch(false);
       })
       .catch(err => {
-        console.log('Error while fetching episodes:', err);
+        // console.log('Error while fetching episodes:', err);
         setFetchingNewSearch(false);
       });
   }
