@@ -4,7 +4,7 @@ function getEpisodes(episodeIds) {
     let fetchUrl = rickUrl + 'episode/';
     fetchUrl += episodeIds;
 
-    console.log('Fetching:', fetchUrl)
+    // console.log('Fetching:', fetchUrl)
     return fetch(fetchUrl)
         .then(res => {
             if (res.status === 200)
@@ -26,7 +26,7 @@ function getEpisodes(episodeIds) {
 function getAllCharacterNames(page) {
     let fetchUrl = rickUrl + 'character/';
     fetchUrl += '?page=' + page;
-    console.log('Fetching:', fetchUrl)
+    // console.log('Fetching:', fetchUrl)
 
     return fetch(fetchUrl)
         .then(res => {
@@ -35,7 +35,7 @@ function getAllCharacterNames(page) {
             throw new Error('Could not find names');
         })
         .then((data) => {
-            console.log('Characters:', data);
+            // console.log('Characters:', data);
             return {
                 numOfPages: data.info.pages,
                 names: data.results.reduce((names, value) =>
@@ -51,7 +51,7 @@ function getAllCharacterNames(page) {
 function getAllCharactersInPage(page) {
     let fetchUrl = rickUrl + 'character/';
     fetchUrl += '?page=' + page;
-    console.log('Fetching:', fetchUrl)
+    // console.log('Fetching:', fetchUrl)
 
     return fetch(fetchUrl)
         .then(res => {
@@ -60,7 +60,7 @@ function getAllCharactersInPage(page) {
             throw new Error('Could not find characters');
         })
         .then((data) => {
-            console.log('Fetched characters:', data);
+            // console.log('Fetched characters:', data);
 
             return {
                 numOfPages: data.info.pages,
