@@ -65,7 +65,7 @@ function SerachArea({ onSearch, searchDisabled, characters }) {
             <button className="search-button"
                 onClick={onSearchButtonClick}
                 disabled={searchDisabled}>
-                <span role="img" aria-label="magnify glass">SEARCH</span>
+                SEARCH
             </button>
             <datalist id="names">
                 {nameList.map((name, i) =>
